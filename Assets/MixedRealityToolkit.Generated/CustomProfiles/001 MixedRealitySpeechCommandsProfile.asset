@@ -52,8 +52,22 @@ MonoBehaviour:
       description: None
       axisConstraint: 0
   - localizationKey: 
-    keyword: Ok
+    keyword: Read
     keyCode: 282
+    action:
+      id: 0
+      description: None
+      axisConstraint: 0
+  - localizationKey: 
+    keyword: Start
+    keyCode: 283
+    action:
+      id: 0
+      description: None
+      axisConstraint: 0
+  - localizationKey: 
+    keyword: Reload
+    keyCode: 284
     action:
       id: 0
       description: None
