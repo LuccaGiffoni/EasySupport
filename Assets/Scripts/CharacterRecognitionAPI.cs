@@ -8,31 +8,32 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.Windows.WebCam;
 using System;
+using Microsoft.MixedReality.Toolkit.Input;
 
 public class CharacterRecognitionAPI : MonoBehaviour
 {
     // Computer Vision information
+    [Header("Azure Information")]
     public string subKey = "186ce7f1f0994ee294c2da4a70fb931d";
     public string url = "https://easysupportvision.cognitiveservices.azure.com/";
 
     // Visual fields
-    [SerializeField] private TextMeshPro response;
-
+    [Header("Materials")]
     [SerializeField] private Material successGreen;
     [SerializeField] private Material redFailure;
     [SerializeField] private Material grayOriginal;
 
+    [Header("Game Objects")]
     [SerializeField] private GameObject visualBackground;
     [SerializeField] private GameObject failureIcon;
     [SerializeField] private GameObject successIcon;
-
+    [SerializeField] private TextMeshPro response;
 
     // Instance
     public static CharacterRecognitionAPI instance;
 
     // texture which displays what our camera is seeing
     private WebCamTexture camTex;
-    [SerializeField] private RawImage rawImage;
 
     // Set-up scene before starting playing
     private void Awake()
@@ -61,9 +62,6 @@ public class CharacterRecognitionAPI : MonoBehaviour
         // Create the camera texture
         camTex = new WebCamTexture(Screen.width, Screen.height);
         camTex.Play();
-
-        // Displaying the camera vision to the user
-        rawImage.texture = camTex;
 
         // Let the user know what to do next
         response.text = "Diga 'Read' para usar o OCR";
@@ -133,40 +131,69 @@ public class CharacterRecognitionAPI : MonoBehaviour
         webReq.SetRequestHeader("Ocp-Apim-Subscription-Key", subKey);
 
         // send the content to the API and wait for a response
-        yield return webReq.SendWebRequest();
-        response.text = webReq.downloadHandler.text;
-        Debug.Log(webReq.downloadHandler.text);
+        // yield return webReq.SendWebRequest();
 
-        // Convert the content string to a JSON file
-        Newtonsoft.Json.Linq.JObject jsonData = Newtonsoft.Json.Linq.JObject.Parse(webReq.downloadHandler.text);
+        var requisition = webReq.SendWebRequest();
 
-        // get just the text from the JSON file and display on-screen
-        try
+        while (!requisition.isDone)
         {
-            response.text = GetTextFromJSON(jsonData).ToString();
-        }
-        catch (JsonException e)
-        {
-            response.text = e.Message;
-            Debug.Log(e.Message);
-        }
+            response.text = "Carregando (" + requisition.progress * 100 + "%)";
 
-        // send the text to the text to speech API
-        //TextToSpeech.instance.StartCoroutine("GetSpeech", imageText);
-        if (webReq.downloadHandler.text.ToLower().Contains("Ricardo".ToLower()))
-        {
-            response.text += "\n\nO código foi encontrado";
-            visualBackground.GetComponent<Renderer>().material = successGreen;
-            successIcon.SetActive(true);
-        }
-        else
-        {
-            response.text += "\n\nO código não foi encontrado. Diga 'Reload' para reiniciar.";
-            visualBackground.GetComponent<Renderer>().material = redFailure;
-            failureIcon.SetActive(false);
-        }
+            if (requisition.isDone)
+            {
+                response.text = webReq.downloadHandler.text;
+                Debug.Log(webReq.downloadHandler.text);
 
-        camTex.Stop();
+                // Convert the content string to a JSON file
+                Newtonsoft.Json.Linq.JObject jsonData = Newtonsoft.Json.Linq.JObject.Parse(webReq.downloadHandler.text);
+
+                // get just the text from the JSON file and display on-screen
+                try
+                {
+                    string jsonText = null;
+
+                    if (jsonData.PropertyValues().Contains("unk"))
+                    {
+                        Debug.Log("JSON Data is empty");
+                        jsonText = ("Não foi possível retirar texto algum da imagem.");
+                    }
+                    else
+                    {
+                        jsonText = GetTextFromJSON(jsonData);
+                    }
+
+                    response.text = jsonText.ToString();
+                }
+                catch (JsonException e)
+                {
+                    response.text = e.Message + "\n\n Ocorreu um erro na leitura da imagem. Por favor, tente novamente, dizendo 'Read'.";
+                    Debug.Log(e.Message);
+                }
+
+                // send the text to the text to speech API
+                //TextToSpeech.instance.StartCoroutine("GetSpeech", imageText);
+                if (webReq.downloadHandler.text.ToLower().Contains("Ricardo".ToLower()))
+                {
+                    response.text += "\n\nO código foi encontrado";
+                    visualBackground.GetComponent<Renderer>().material = successGreen;
+                    successIcon.SetActive(true);
+                }
+                else
+                {
+                    response.text += "\n\nO código não foi encontrado. Diga 'Reload' para reiniciar.";
+                    visualBackground.GetComponent<Renderer>().material = redFailure;
+                    failureIcon.SetActive(false);
+                }
+
+                camTex.Stop();
+                yield return requisition.webRequest;
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
     }
 
     // Returns the text from the JSON data

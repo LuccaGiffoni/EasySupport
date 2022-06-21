@@ -1,0 +1,19 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+
+# All files
+[*]
+indent_style = space
+
+# Xml files
+[*.xml]
+indent_size = 2
+
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <appSettings>
+    <add key="AWSProfileName" value="profile1"/>
+    <add key="AWSAccessKey" value="your Access Key goes here"/>
+    <add key="AWSSecretKey" value="your Secret Key goes here"/>
+
+  </appSettings>
+</configuration>

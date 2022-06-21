@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/MainMenu.unity
+    guid: e11fe51017b36a8409b3e28f722067dc
+  - enabled: 1
+    path: Assets/Scenes/Operations.unity
+    guid: 6b98715feb9e90b4ca3cc5b3d15c8da3
+  - enabled: 1
+    path: Assets/Scenes/PublishResults.unity
+    guid: ec33561c8e6af32489f2e7b566c7cafa
+  - enabled: 0
+    path: Assets/MRTK/Examples/Experimental/MixedRealityKeyboard/Scenes/MixedRealityKeyboardExample.unity
+    guid: b21a91f417fdc7b41b531772ff092fcb
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: b0b0716f646bd7f4fb907f62b1e504b4, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2eaba5e98e1cbfb4c9a4f050a3c88273, type: 2}
