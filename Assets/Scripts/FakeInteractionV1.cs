@@ -150,7 +150,7 @@ public class FakeInteractionV1 : MonoBehaviour
     {
         GetSceneBackToOriginal();
 
-        GameObject monitor = GameObject.Find("Monitor(Clone)");
+        GameObject monitor = GameObject.Find("Placa(Clone)");
         Destroy(monitor);
 
         // Setting instruction for user
@@ -348,7 +348,7 @@ public class FakeInteractionV1 : MonoBehaviour
     {
         if (activeOperation.Equipment == "Machine")
         {
-            Instantiate(Resources.Load("Monitor"));
+            Instantiate(Resources.Load("Placa"));
         }
         else
         {

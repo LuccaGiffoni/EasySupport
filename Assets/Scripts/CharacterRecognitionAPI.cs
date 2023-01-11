@@ -3,12 +3,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
 using Newtonsoft.Json;
-using UnityEngine.UI;
 using System.Linq;
-using System.Collections.Generic;
-using UnityEngine.Windows.WebCam;
 using System;
-using Microsoft.MixedReality.Toolkit.Input;
 
 public class CharacterRecognitionAPI : MonoBehaviour
 {

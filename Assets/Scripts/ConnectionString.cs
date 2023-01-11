@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Data;
-using System.Data.SqlClient;
+
 // using MySqlConnector;
 
 public class ConnectionString : MonoBehaviour
